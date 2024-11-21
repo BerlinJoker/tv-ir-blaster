@@ -1,0 +1,191 @@
+esphome:
+  name: ir8266
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  - platform: esphome
+    password: ""
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Ir8266 Fallback Hotspot"
+    password: !secret ap_password
+
+captive_portal:
+    
+    
+remote_transmitter:
+  pin: GPIO4
+  carrier_duty_percent: 50%
+    
+  
+#switch was only used for the first tryout
+#buttons work better, as IR doesn't have a state
+switch:
+  - platform: template
+    name: SonyTVonoff8266
+    id: sonytvonoff8266
+    turn_on_action:
+      - remote_transmitter.transmit_sony:
+          data: 0xA90
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+            
+button:
+  - platform: template
+    name: SonyTVtoggle8266
+    id: sonytvtoggle8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0xA90
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVon8266
+    id: sonytvon8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x750
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVoff8266
+    id: sonytvoff8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0xF50
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVvolumeup8266
+    id: sonytvvolumeup8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x490
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVvolumedown8266
+    id: sonytvvolumedown8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0xC90
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVmute8266
+    id: sonytvmute8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x290
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: template
+    name: SonyTVplay8266
+    id: sonytvplay8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x2CE9
+          nbits: 15
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+            
+  - platform: template
+    name: SonyTVpause8266
+    id: sonytvpause8266
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x4CE9
+          nbits: 15
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO12
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    id: physical_ir_button
+    name: physicalIrButton
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0xA90
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: gpio
+    pin:
+      number: GPIO13
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    id: physical_ir_button_right
+    name: physicalIrButtonRight
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0xF50
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
+            
+  - platform: gpio
+    pin:
+      number: GPIO14
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    id: physical_ir_button_left
+    name: physicalIrButtonLeft
+    on_press:
+      - remote_transmitter.transmit_sony:
+          data: 0x750
+          nbits: 12
+          repeat:
+            times: 5
+            wait_time: 50ms
